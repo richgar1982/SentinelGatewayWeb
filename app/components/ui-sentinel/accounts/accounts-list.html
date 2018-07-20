@@ -1,0 +1,127 @@
+<div ng-controller="AccountsListController as accountListUi">
+    <div class="row" ng-show="accountListUi.activateInProgress">
+        <div class="col-sm-6 col-sm-offset-3">
+            <br/>
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <i class="fa fa-exclamation-triangle"></i> Activate <strong>{{accountListUi.account.name}}</strong>
+                </div>
+                <div class="panel-body">
+                    <p>Are you sure you want to activate <strong>{{accountListUi.account.name}}</strong>?</p>
+                    <div class="pull-right">
+                        <button role="button" class="btn btn-default" ng-click="accountListUi.activateSubmit()">Yes</button>
+                        <button role="button" class="btn btn-default" ng-click="accountListUi.activateCancel()">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="accountListUi.changeNameInProgress">
+        <div class="col-sm-6 col-sm-offset-3">
+            <br/>
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <i class="fa fa-exclamation-circle"></i> Change name for <strong>{{accountListUi.account.name}}</strong>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3">New name</label>
+                            <div class="col-sm-6">
+                                <input type="text" id="txt-NewName" class="form-control" ng-model="accountListUi.newName">
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <button role="button" class="btn btn-default" ng-click="accountListUi.changeNameSubmit()">Submit</button>
+                            <button role="button" class="btn btn-default" ng-click="accountListUi.changeNameCancel()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="accountListUi.addAccountInProgress">
+        <div class="col-sm-6 col-sm-offset-3">
+            <br/>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <i class="fa fa-exclamation-circle"></i> Add account
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3">Account name</label>
+                            <div class="col-sm-6">
+                                <input type="text" id="txt-AccountName" class="form-control" ng-model="accountListUi.newName">
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <button role="button" class="btn btn-default" ng-click="accountListUi.addAccountSubmit()">Submit</button>
+                            <button role="button" class="btn btn-default" ng-click="accountListUi.addAccountCancel()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="accountListUi.suspendInProgress">
+        <div class="col-sm-6 col-sm-offset-3">
+            <br/>
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <i class="fa fa-exclamation-triangle"></i> Suspend <strong>{{accountListUi.account.name}}</strong>
+                </div>
+                <div class="panel-body">
+                    <p>Are you sure you want to suspend <strong>{{accountListUi.account.name}}</strong>?</p>
+                    <div class="pull-right">
+                        <button role="button" class="btn btn-default" ng-click="accountListUi.suspendSubmit()">Yes</button>
+                        <button role="button" class="btn btn-default" ng-click="accountListUi.suspendCancel()">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="20">#</th>
+                    <th width="60">
+                        <button class="btn btn-sm btn-default" type="button" id="btn-addAccount" ng-click="accountListUi.addAccountBegin()">
+                            New
+                        </button>
+                    </th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Date Added</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-show="accountListUi.list.length === 0" class="warning">
+                    <td></td>
+                    <td colspan="3">There are no records</td>
+                </tr>
+                <tr ng-show="accountListUi.list.length != 0" ng-repeat="item in accountListUi.list | orderBy: 'name'">
+                    <td width="20">{{ $index + 1 }}</td>
+                    <td width="60">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdown{{$index}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bars"></i>&nbsp;&nbsp;<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdown{{$index}}">
+                                <li ng-hide="item.status === 'active'"><a ng-click="accountListUi.activateBegin(item)">Activate</a></li>
+                                <li><a ng-click="accountListUi.changeNameBegin(item)">Change Name</a></li>
+                                <li><a ng-click="accountListUi.setFocus(item)">Set Focus</a></li>
+                                <li ng-show="item.status === 'active'"><a ng-click="accountListUi.suspendBegin(item)">Suspend</a></li>
+                            </ul>
+                        </div>
+                    </td>                    <td>{{ item.name }}</td>
+                    <td>{{ item.status }}</td>
+                    <td><span local-datetime utc-datetime="{{item.dateAdded}}" date-format="L" time-format="LTS"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

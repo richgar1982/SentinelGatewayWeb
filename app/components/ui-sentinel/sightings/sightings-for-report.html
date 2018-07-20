@@ -1,0 +1,87 @@
+<div ng-controller="SightingsForReportController as sightingsForReportUi">
+    <div class="row">
+        <div class="col-sm-2">
+            <br/>
+            <div class="panel panel-default">
+                <div class="panel-heading">Sentry Report Data</div>
+                <table class="table table-condensed">
+                    <tr><td><strong>Imei</strong><span class="pull-right">{{ sightingsForReportUi.report.imei }}</span></td></tr>
+                    <tr><td><strong>Time of Report</strong><span class="pull-right" local-datetime utc-datetime="{{sightingsForReportUi.report.timeOfReport}}" date-format="L" time-format="LTS"></span></td></tr>
+                    <tr><td><strong>Time of Receipt</strong><span class="pull-right" local-datetime utc-datetime="{{sightingsForReportUi.report.timeOfReceipt}}" date-format="L" time-format="LTS"></span></td></tr>
+                    <tr><td><strong>Battery</strong><span class="pull-right">{{ sightingsForReportUi.report.batteryPercent }}%</span></td></tr>
+                    <tr><td><strong>Light</strong><span class="pull-right">{{ sightingsForReportUi.report.light }} lux</span></td></tr>
+                    <tr><td><strong>Location Method</strong><span class="pull-right">{{ sightingsForReportUi.report.locationMethod  === 'CellTriangulation' ? 'Network' : sightingsForReportUi.report.locationMethod}}</span></td></tr>
+                    <tr ng-if="sightingsForReportUi.report.latitude">
+                        <td>
+                            <strong>Location (Lat Lng)</strong>
+                            <span class="pull-right text-right">{{ sightingsForReportUi.report.latitude }}<br/>{{ sightingsForReportUi.report.longitude }}</span>
+                        </td>
+                    </tr>
+                    <tr><td><strong>Motion</strong><span class="pull-right">{{  sightingsForReportUi.report.isMotionDetected || sightingsForReportUi.report.isVibrationDetected ? 'Detected' : 'Not detected' }}</span></td></tr>
+                    <tr><td><strong>Pressure</strong><span class="pull-right">{{ sightingsForReportUi.report.pressure }} kPa</span></td></tr>
+                    <!--<tr><td><strong>Reporting Interval</strong><span class="pull-right">{{ deviceTrackingMap.secondsService.format(sightingsForReportUi.report.reportInterval) }}</span></td></tr>-->
+                    <tr><td><strong>Shock</strong><span class="pull-right text-right">{{ sightingsForReportUi.report.isShockExceeded ? sightingsForReportUi.report.shockMagnitude  + 'g' : 'Not detected' }}<br/>{{ sightingsForReportUi.report.isShockExceeded ? '(' + sightingsForReportUi.report.shockX + ', ' + sightingsForReportUi.report.shockY + ', ' + sightingsForReportUi.report.shockZ + ')' : null}}</span></td></tr>
+                    <tr><td><strong>Sightings</strong><span class="pull-right text-right">{{ sightingsForReportUi.report.countOfSightings }}</span></td></tr>
+                    <tr><td><strong>Temperature</strong><span class="pull-right">{{ sightingsForReportUi.report.temperatureC }}&deg;C<br/>{{ sightingsForReportUi.report.temperatureF }}&deg;F</span></td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-10">
+            <div class="col-sm-12" ng-hide="sightingsForReportUi.report.locationMethod === 'none'">
+                <div id="sightingsMap" class="sightings-map"></div>
+            </div>
+            <br/>
+            <nav class="pull-right" aria-label="Page navigation" ng-show="sightingsForReportUi.totalPages > 1">
+                <ul class="pagination">
+                    <li ng-class="{'disabled': sightingsForReportUi.page === 1}"><a role="button" aria-label="Previous" ng-click="sightingsForReportUi.previous();"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li ng-repeat="n in sightingsForReportUi.pageArray" ng-class="{'active': n === sightingsForReportUi.page}"><a href="#" aria-label="Page {{n}}"><span aria-hidden="true">{{n}}</span></a></li>
+                    <li ng-class="{'disabled': sightingsForReportUi.page === sightingsForReportUi.totalPages}"><a role="button" aria-label="Next" ng-click="sightingsForReportUi.next();"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </nav>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="20">#</th>
+                    <th>Mac</th>
+                    <th>Battery (%)</th>
+                    <th>Battery (mv)</th>
+                    <th>Humidity (%)</th>
+                    <th>Light (lux)</th>
+                    <th>Rssi (db)</th>
+                    <th>Temp (&deg;C)</th>
+                    <th>Temp (&deg;F)</th>
+                    <th>Probe (&deg;C)</th>
+                    <th>Probe (&deg;F)</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-show="sightingsForReportUi.list.length === 0" class="warning">
+                    <td></td>
+                    <td colspan="10">There are no records</td>
+                </tr>
+                <tr ng-show="sightingsForReportUi.error" class="danger">
+                    <td></td>
+                    <td colspan="10">Not authorized to view the data for this Sentry</td>
+                </tr>
+                <tr ng-show="sightingsForReportUi.list.length != 0" ng-repeat="item in sightingsForReportUi.list">
+                    <td width="20">{{ $index + 1 }}</td>
+                    <td>{{ item.mac }}</td>
+                    <td>{{ item.batteryPercent }}</td>
+                    <td>{{ item.batteryVoltage }}</td>
+                    <td>{{ item.humidity}}</td>
+                    <td>{{ item.light}}</td>
+                    <td>{{ item.rssi }}</td>
+                    <td>{{ item.temperatureC }}</td>
+                    <td>{{ item.temperatureF}}</td>
+                    <td>{{ item.temperatureProbeC }}</td>
+                    <td>{{ item.temperatureProbeF}}</td>
+                    <td>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

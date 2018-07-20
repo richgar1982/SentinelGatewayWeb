@@ -1,0 +1,117 @@
+<div ng-controller="SightingsByDeviceController as sightingsByDeviceUi">
+    <div class="row">
+        <div class="col-sm-12">
+            <br/>
+            <nav class="navbar navbar-default col-sm-12">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa {{sightingsByDeviceUi.currentPageView.icon}}"></i>&nbsp;&nbsp;{{ sightingsByDeviceUi.currentPageView.title}} <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="view in sightingsByDeviceUi.pageViews"><a type="button" ng-click="sightingsByDeviceUi.changeView(view.name)"><i class="fa {{view.icon}}"></i>&nbsp;&nbsp;{{view.title}}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form" ng-show="sightingsByDeviceUi.currentPageView.name === 'hours'">
+                    <div class="form-group">
+                        <label>Hours&nbsp;</label>
+                        <input type="number" class="form-control" ng-model="sightingsByDeviceUi.hoursText">
+                    </div>
+                    <div class="form-group">
+                        &nbsp;
+                        <button class="btn btn-default" type="button" ng-click="sightingsByDeviceUi.load()">Load</button>
+                    </div>
+                </form>
+                <form class="navbar-form" ng-show="sightingsByDeviceUi.currentPageView.name === 'range'">
+                    <div class="form-group">
+                        <label>From&nbsp;</label>
+                        <input type="text" class="form-control" ng-model="sightingsByDeviceUi.fromText" placeholder="yyyy-mm-ddThh:mm:ss">
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;&nbsp;To&nbsp;</label>
+                        <input type="text" class="form-control" ng-model="sightingsByDeviceUi.toText" placeholder="yyyy-mm-ddThh:mm:ss">
+                    </div>
+                    <div class="form-group">
+                        &nbsp;
+                        <button class="btn btn-default" type="button" ng-click="sightingsByDeviceUi.load()">Load</button>
+                    </div>
+                </form>
+            </nav>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-sm-12">
+            <br/>
+            <nav class="pull-right" aria-label="Page navigation" ng-show="sightingsByDeviceUi.totalPages > 1">
+                <ul class="pagination">
+                    <li ng-class="{'disabled': sightingsByDeviceUi.page === 1}"><a role="button" aria-label="Previous" ng-click="sightingsByDeviceUi.previous();"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li ng-repeat="n in sightingsByDeviceUi.pageArray" ng-class="{'active': n === sightingsByDeviceUi.page}"><a role="button" ng-click="sightingsByDeviceUi.gotoPage(n);" aria-label="Page {{n}}"><span aria-hidden="true">{{n}}</span></a></li>
+                    <li ng-class="{'disabled': sightingsByDeviceUi.page === sightingsByDeviceUi.totalPages}"><a role="button" aria-label="Next" ng-click="sightingsByDeviceUi.next();"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </nav>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="20">#</th>
+                    <th></th>
+                    <th>Sentry</th>
+                    <th>Sentinel</th>
+                    <th>Time of Sighting</th>
+                    <th>Battery (%)</th>
+                    <th>Battery (mv)</th>
+                    <th>Humidity (%)</th>
+                    <th>Light (lux)</th>
+                    <th>Rssi (db)</th>
+                    <th>Temp (&deg;C)</th>
+                    <th>Temp (&deg;F)</th>
+                    <th>Probe (&deg;C)</th>
+                    <th>Probe (&deg;F)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-show="sightingsByDeviceUi.list.length === 0" class="warning">
+                    <td></td>
+                    <td colspan="12">There are no records</td>
+                </tr>
+                <tr ng-show="sightingsByDeviceUi.list.length != 0" ng-repeat="item in sightingsByDeviceUi.list">
+                    <td width="20">{{ $index + 1 }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdown{{$index}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bars"></i>&nbsp;&nbsp;<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdown{{$index}}">
+                                <li><a ng-click="sightingsByDeviceUi.gotoSightingsForReport(item)"><i class="fa fa-sm fa-search"></i>&nbsp;Sightings for this report</a></li>
+                                <!--<li role="separator" class="divider"></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.gotoDeviceReports(item)"><i class="fa fa-sm fa-search"></i>&nbsp;Reports from this Sentry</a></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.gotoSightingsByDevice(item)"><i class="fa fa-sm fa-search"></i>&nbsp;Sightings by this Sentry</a></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.gotoSightingsPivotForDevice(item)"><i class="fa fa-sm fa-search"></i>&nbsp;Sightings Pivot for this Sentry</a></li>-->
+                                <!--<li role="separator" class="divider"></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.gotoSeparationSimulator(item)"><i class="fa fa-sm fa-arrow-circle-right"></i>&nbsp;Separation simulator</a></li>-->
+                                <!--<li role="separator" class="divider"></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.goToReportSightings(item)"><i class="fa fa-sm fa-arrow-circle-right"></i>&nbsp;Warehouse simulator</a></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.goToReportSightings(item)"><i class="fa fa-sm fa-plus-square"></i>&nbsp;Add to warehouse simulator</a></li>-->
+                                <!--<li><a ng-click="latestSentryReportUi.goToReportSightings(item)"><i class="fa fa-sm fa-minus-square"></i>&nbsp;Remove from warehouse simulator</a></li>-->
+                            </ul>
+                        </div>
+                    </td>
+                    <td>{{ item.imei }}</td>
+                    <td>{{ item.mac }}</td>
+                    <td><span local-datetime utc-datetime="{{ item.timeOfReport }}" date-format="L" time-format="LTS"></span></td>
+                    <td>{{ item.batteryPercent }}</td>
+                    <td>{{ item.batteryVoltage }}</td>
+                    <td>{{ item.humidity}}</td>
+                    <td>{{ item.light}}</td>
+                    <td>{{ item.rssi }}</td>
+                    <td>{{ item.temperatureC }}</td>
+                    <td>{{ item.temperatureF}}</td>
+                    <td>{{ item.temperatureProbeC }}</td>
+                    <td>{{ item.temperatureProbeF}}</td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
